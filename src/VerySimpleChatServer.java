@@ -9,10 +9,14 @@ public class VerySimpleChatServer {
     public class ClientHandler implements Runnable {
         BufferedReader reader;
         Socket sock;
+        String[] userList;
+        int userID;
 
-        public ClientHandler(Socket clientSocket) {
+        public ClientHandler(Socket clientSocket, int usr) {
             try {
                 sock = clientSocket;
+                userID = usr;
+//                userList[userID] ="user" +usr;
                 InputStreamReader isReader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(isReader);
             } catch (Exception ex) {
@@ -22,9 +26,12 @@ public class VerySimpleChatServer {
 
         public void run() {
             String message;
+//            String name = userList[userID];
             try {
                 while ((message = reader.readLine()) != null) {
-                    System.out.println("read: " + message);
+                    String userName = "user" + userID;
+                    message = userName + ": " + message;
+                    System.out.println(message);
                     tellEveryone(message);
                 }
             } catch (Exception ex) {
@@ -46,8 +53,8 @@ public class VerySimpleChatServer {
                 Socket clientSocket = serverSock.accept();
                 PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
                 clientOutputStreams.add(writer);
-
-                Thread t = new Thread(new ClientHandler(clientSocket));
+                int i = clientOutputStreams.indexOf(writer);
+                Thread t = new Thread(new ClientHandler(clientSocket,i ));
                 t.start();
                 System.out.println("got a connection");
             }
