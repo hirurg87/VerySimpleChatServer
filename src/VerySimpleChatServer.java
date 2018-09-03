@@ -34,11 +34,11 @@ public class VerySimpleChatServer {
 
                     if(message.startsWith("%")){
                         userName = message.substring(1);
-                    }else {
-                        message = userName + ": " + message;
-                        System.out.println(message);
-                        tellEveryone(message);
                     }
+
+                    message = userName + ": " + message;
+                    System.out.println(message);
+                    tellEveryone(message);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
