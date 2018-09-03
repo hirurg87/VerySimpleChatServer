@@ -11,11 +11,13 @@ public class VerySimpleChatServer {
         Socket sock;
         String[] userList;
         int userID;
+        String userName;
 
         public ClientHandler(Socket clientSocket, int usr) {
             try {
                 sock = clientSocket;
                 userID = usr;
+                userName = "user" + userID;
 //                userList[userID] ="user" +usr;
                 InputStreamReader isReader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(isReader);
@@ -29,10 +31,14 @@ public class VerySimpleChatServer {
 //            String name = userList[userID];
             try {
                 while ((message = reader.readLine()) != null) {
-                    String userName = "user" + userID;
-                    message = userName + ": " + message;
-                    System.out.println(message);
-                    tellEveryone(message);
+
+                    if(message.startsWith("%")){
+                        userName = message.substring(1);
+                    }else {
+                        message = userName + ": " + message;
+                        System.out.println(message);
+                        tellEveryone(message);
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
